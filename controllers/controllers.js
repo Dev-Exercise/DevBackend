@@ -4,7 +4,7 @@ const csv = require("csvtojson");
 
 //Home
 exports.home = (req, res) => {
-  res.send("hello world get");
+  res.send("hello world");
 };
 
 //Upload CSV File
@@ -54,5 +54,17 @@ exports.uploadStation = async (req, res) => {
     // Handle any errors that occur during CSV to JSON conversion or MongoDB insertion
     console.error(err);
     return res.status(500).json({ error: "Failed to process CSV file" });
+  }
+};
+
+//find all jounrey list
+exports.journeyData = async (req, res) => {
+  try {
+    // Query the collection to retrieve all documents
+    const result = await JourneyModel.find({}).limit(100);
+    const data = res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+    // console.log(error);
   }
 };
