@@ -59,12 +59,18 @@ exports.uploadStation = async (req, res) => {
 
 //find all jounrey list
 exports.journeyData = async (req, res) => {
+  const { search, distance, duration } = req.query;
+  console.log(duration);
   try {
-    // Query the collection to retrieve all documents
-    const result = await JourneyModel.find({}).limit(100);
-    const data = res.json(result);
+    const result = await JourneyModel.find({
+      ["Departure station name"]: { $regex: search, $options: "i" },
+      ["Covered distance (m)"]: { $gt: distance },
+      ["Duration (sec.)"]: { $gt: duration },
+    }).limit(100);
+
+    res.send(result);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Internal server error" });
-    // console.log(error);
   }
 };
