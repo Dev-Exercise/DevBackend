@@ -60,7 +60,7 @@ exports.uploadStation = async (req, res) => {
 //find all jounrey list
 exports.journeyData = async (req, res) => {
   const { search, distance, duration } = req.query;
-  console.log(duration);
+  // console.log(duration);
   try {
     const result = await JourneyModel.find({
       ["Departure station name"]: { $regex: search, $options: "i" },
@@ -71,6 +71,53 @@ exports.journeyData = async (req, res) => {
     res.send(result);
   } catch (error) {
     console.log(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+//find all station list
+exports.stationData = async (req, res) => {
+  const search = req.query.search;
+  try {
+    const result = await StationModel.find({
+      Name: { $regex: search, $options: "i" },
+    }).limit(100);
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+//find total statring station
+exports.countTotalStartingStation = async (req, res) => {
+  try {
+    const stationName = req.params.stationName;
+
+    const query = {};
+    query["Departure station name"] = stationName;
+
+    const count = await JourneyModel.countDocuments(query);
+
+    res.json({ count });
+  } catch (error) {
+    console.error("Error counting stations:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+//find total ending station
+exports.countEndingStation = async (req, res) => {
+  try {
+    const stationName = req.params.stationName;
+
+    const query = {};
+    query["Return station name"] = stationName;
+
+    const count = await JourneyModel.countDocuments(query);
+
+    res.json({ count });
+  } catch (error) {
+    console.error("Error counting stations:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };

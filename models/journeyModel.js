@@ -34,14 +34,3 @@ const journeySchema = new Schema({
 const Journey = model("Journey", journeySchema);
 
 module.exports = Journey;
-
-/*
- Departure: '2021-06-30T23:59:46',
-  Return: '2021-06-30T23:59:55',
-  'Departure station id': '041',
-  'Departure station name': 'Ympyrätalo',
-  'Return station id': '041',
-  'Return station name': 'Ympyrätalo',
-  'Covered distance (m)': '0',
-  'Duration (sec': { ')': '8' }
-*/
