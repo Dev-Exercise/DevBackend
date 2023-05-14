@@ -5,9 +5,8 @@ const bodyParser = require("body-parser");
 const routes = require("./routes/routes");
 var cors = require("cors");
 const multer = require("multer");
-var fs = require("fs");
-const JourneyModel = require("./models/journeyModel");
 const csv = require("csvtojson");
+const JourneyModel = require("./models/journeyModel");
 
 app.use(cors());
 app.use(bodyParser.json());

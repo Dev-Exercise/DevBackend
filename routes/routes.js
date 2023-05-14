@@ -15,5 +15,15 @@ router.get(
   controllers.countTotalStartingStation
 );
 router.get("/countEndingStation/:stationName", controllers.countEndingStation);
+router.get(
+  "/average-distance-starting/:stationName",
+  controllers.startingDistance
+);
+router.get("/average-distance-ending/:stationName", controllers.endingDistance);
+router.get("/topReturnStations/:departureStation", controllers.topFiveReturn);
+router.get(
+  "/topDepartureStations/:returnStation",
+  controllers.topFiveDeparture
+);
 
 module.exports = router;

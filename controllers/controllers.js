@@ -121,3 +121,103 @@ exports.countEndingStation = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+//Average Distance
+exports.startingDistance = async (req, res) => {
+  try {
+    const stationName = req.params.stationName;
+
+    const result = await JourneyModel.aggregate([
+      {
+        $match: {
+          ["Departure station name"]: stationName,
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          averageDistance: { $avg: "$Covered distance (m)" },
+        },
+      },
+    ]);
+
+    if (result.length === 0) {
+      res
+        .status(404)
+        .json({ error: "No journeys found from the specified station" });
+    } else {
+      res.json({ averageDistance: result[0].averageDistance });
+    }
+  } catch (err) {
+    console.error("Error:", err);
+    res.status(500).json({ error: "An internal server error occurred" });
+  }
+};
+exports.endingDistance = async (req, res) => {
+  try {
+    const stationName = req.params.stationName;
+
+    const result = await JourneyModel.aggregate([
+      {
+        $match: {
+          ["Return station name"]: stationName,
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          averageDistance: { $avg: "$Covered distance (m)" },
+        },
+      },
+    ]);
+
+    if (result.length === 0) {
+      res
+        .status(404)
+        .json({ error: "No journeys found from the specified station" });
+    } else {
+      res.json({ averageDistance: result[0].averageDistance });
+    }
+  } catch (err) {
+    console.error("Error:", err);
+    res.status(500).json({ error: "An internal server error occurred" });
+  }
+};
+
+//Top 5 return station
+
+exports.topFiveReturn = async (req, res) => {
+  try {
+    const { departureStation } = req.params;
+
+    // Aggregate the collection to count the return stations
+    const result = await JourneyModel.aggregate([
+      { $match: { ["Departure station name"]: departureStation } },
+      { $group: { _id: "$Return station name", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 5 },
+    ]);
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "An error occurred" });
+  }
+};
+exports.topFiveDeparture = async (req, res) => {
+  try {
+    const { returnStation } = req.params;
+
+    // Aggregate the collection to count the return stations
+    const result = await JourneyModel.aggregate([
+      { $match: { ["Return station name"]: returnStation } },
+      { $group: { _id: "$Departure station name", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 5 },
+    ]);
+
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "An error occurred" });
+  }
+};
