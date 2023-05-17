@@ -203,6 +203,7 @@ exports.topFiveReturn = async (req, res) => {
     res.status(500).json({ error: "An error occurred" });
   }
 };
+
 exports.topFiveDeparture = async (req, res) => {
   try {
     const { returnStation } = req.params;
@@ -219,5 +220,30 @@ exports.topFiveDeparture = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "An error occurred" });
+  }
+};
+
+//Create New Journeys
+exports.newJourney = async (req, res) => {
+  try {
+    const journey = new JourneyModel({
+      Departure: req.body.Departure,
+      Return: req.body.Return,
+      ["Departure station id"]: req.body["Departure station id"],
+      ["Departure station name"]: req.body["Departure station name"],
+      ["Return station id"]: req.body["Return station id"],
+      ["Return station name"]: req.body["Return station name"],
+      ["Covered distance (m)"]: req.body["Covered distance (m)"],
+      ["Duration (sec)"]: req.body["Duration (sec)"],
+    });
+
+    // Save the journey to the database
+    await journey.save();
+
+    res.status(201).json({ message: "Journey saved successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "An error occurred while saving the journey" });
   }
 };

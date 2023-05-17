@@ -25,5 +25,6 @@ router.get(
   "/topDepartureStations/:returnStation",
   controllers.topFiveDeparture
 );
+router.post("/newJourney", controllers.newJourney);
 
 module.exports = router;
