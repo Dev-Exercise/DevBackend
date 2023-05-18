@@ -59,16 +59,21 @@ exports.uploadStation = async (req, res) => {
 
 //find all jounrey list
 exports.journeyData = async (req, res) => {
-  const { search, distance, duration } = req.query;
-  // console.log(duration);
+  const distance = "10";
+  const duration = "10";
   try {
-    const result = await JourneyModel.find({
-      ["Departure station name"]: { $regex: search, $options: "i" },
+    const documents = await JourneyModel.find({
       ["Covered distance (m)"]: { $gt: distance },
       ["Duration (sec.)"]: { $gt: duration },
     }).limit(100);
+    console.log(documents);
+    const modifiedDocuments = documents.map((document) => ({
+      ...document.toObject(),
+      ["Covered distance (m)"]: document["Covered distance (m)"] / 1000,
+      ["Duration (sec"]: Math.ceil(document["Duration (sec"][")"] / 60),
+    }));
 
-    res.send(result);
+    res.send(modifiedDocuments);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal server error" });
@@ -77,7 +82,10 @@ exports.journeyData = async (req, res) => {
 
 //find all station list
 exports.stationData = async (req, res) => {
-  const search = req.query.search;
+  const result = req.query.search;
+  var search;
+  result ? (search = result) : (search = "");
+
   try {
     const result = await StationModel.find({
       Name: { $regex: search, $options: "i" },
