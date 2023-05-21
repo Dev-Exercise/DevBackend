@@ -66,7 +66,6 @@ exports.journeyData = async (req, res) => {
       ["Covered distance (m)"]: { $gt: distance },
       ["Duration (sec.)"]: { $gt: duration },
     }).limit(100);
-    console.log(documents);
     const modifiedDocuments = documents.map((document) => ({
       ...document.toObject(),
       ["Covered distance (m)"]: document["Covered distance (m)"] / 1000,
